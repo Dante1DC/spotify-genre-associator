@@ -1,0 +1,6 @@
+spotipy
+pandas
+# i <3 tqdm
+tqdm
+tenacity
+swifter
