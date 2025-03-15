@@ -20,6 +20,15 @@ import config
     stop=stop_after_attempt(5),
     retry=retry_if_exception_type(SpotifyException),
 )
+
+def sample_by_date_column(df, sample=config.SAMPLE):
+    if sample:
+        df[config.SAMPLE_COLUMN] = pd.to_datetime(df[config.SAMPLE_COLUMN])
+        return df[df[config.SAMPLE_COLUMN] > config.SAMPLE_CUTOFF]
+    else:
+        return df
+    
+
 def spotify_call(func, *args, **kwargs):
     try:
         return func(*args, **kwargs)
@@ -55,7 +64,7 @@ if __name__ == "__main__":
     sp = spotipy.Spotify(auth_manager=auth)
 
     config.VERBOSE and print(f"--> ○ Loading dataset from {config.DF_PATH}...")
-    df = pd.read_csv(config.DF_PATH)
+    df = sample_by_date_column(pd.read_csv(config.DF_PATH))
     config.VERBOSE and print(f"--> ✓ Dataset from {config.DF_PATH} loaded successfully...")
 
     # python moment
