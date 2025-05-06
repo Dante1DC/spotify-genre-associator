@@ -29,7 +29,7 @@ def create_recession_indicators(tracks_df, sahm_df, threshold=0.5, save_path="",
     df.drop(columns=columns_to_drop, inplace=True)
     df.to_parquet(save_path) if save_path else ""
     return df
-# danceability, energy, loudness, speechiness, acousticness, instrumentalness, liveness, valence
+
 if __name__ == "__main__":
     df = create_recession_indicators(pd.read_parquet("data/tracks_genres_sahm.parquet"), pd.read_csv("data/SAHMREALTIME.csv"), save_path="tracks_genres_sahm_recession.parq")
     print(df.head())
