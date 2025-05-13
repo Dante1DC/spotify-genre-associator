@@ -73,7 +73,7 @@ def print_results(df):
         print(f"\nFeature: {row["feature"]}")
         print(f"U Statistic: {row["statistic"]:.0f}")
         print(f"Unadjusted p-value: {row["p"]}")
-        print(f"Adjusted p-value (Bonferroni): {row["adj_p"]}")
+        print(f"Adjusted p-value: {row["adj_p"]}")
         print(f"Significant: {'Yes' if row["significant?"] else 'No'}")
         print(f"Effect size: {row["d"]:.3f}")
         print(f"Medians - Recession: {row["median_1"]:.3f}, Non-Recession: {row["median_2"]:.3f}")
@@ -117,23 +117,18 @@ def plot_effect_sizes(results_df, figsize=(10, 6)):
 def volcano_plot(results_df):
     fig, ax = plot.subplots(figsize=(10, 6))
     
-    # Transform p-values
     results_df['neg_log_p'] = -np.log10(results_df['adj_p'])
     
-    # Color by significance
     colors = ['#1f77b4' if sig else 'gray' for sig in results_df['significant?']]
     
-    # Scatter plot
     ax.scatter(results_df['d'], results_df['neg_log_p'], c=colors, alpha=0.7)
     
-    # Labels and thresholds
     ax.axhline(-np.log10(0.05), color='red', linestyle='--', label='p=0.05')
     ax.axvline(0, color='black', linestyle='-', alpha=0.5)
     ax.set_xlabel("Cliff's Delta")
     ax.set_ylabel("-log10(adjusted p-value)")
     ax.set_title("Volcano Plot: Effect Size vs. Statistical Significance")
     
-    # Annotate top features
     top_features = results_df.nlargest(3, 'neg_log_p')
     for _, row in top_features.iterrows():
         ax.text(row['d'], row['neg_log_p'], row['feature'], 
